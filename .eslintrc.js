@@ -4,6 +4,7 @@ module.exports = {
     project: 'tsconfig.json',
     tsconfigRootDir: __dirname,
     sourceType: 'module',
+    ecmaVersion: 2018
   },
   plugins: ['@typescript-eslint/eslint-plugin'],
   extends: [
