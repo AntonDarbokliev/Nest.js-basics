@@ -9,7 +9,8 @@ export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
   async editUser(id: number, dto: EditUserDto) {
-    const user = await this.userModel.updateOne({ id: id }, dto);
+    await this.userModel.updateOne({ id: id }, dto);
+    const user = this.userModel.findOne({ id: id });
     return user;
   }
 }
