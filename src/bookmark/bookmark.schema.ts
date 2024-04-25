@@ -10,11 +10,13 @@ export class Bookmark {
 
   @Prop({
     default: now(),
+    type: Date,
   })
   createdAt: Date;
 
   @Prop({
     default: now(),
+    type: Date,
   })
   updatedAt: Date;
 
@@ -28,4 +30,4 @@ export class Bookmark {
   link: string;
 }
 
-export const UserSchema = SchemaFactory.createForClass(Bookmark);
+export const BookmarkSchema = SchemaFactory.createForClass(Bookmark);
