@@ -5,6 +5,8 @@ import { MongooseHelperService } from '../src/mongoose/mongooseHelper.service';
 import * as pactum from 'pactum';
 import { AuthDto } from 'src/auth/dto';
 import { EditUserDto } from 'src/user/dto';
+import { CreateBookmarkDto } from 'src/bookmark/dto';
+import { EditBookmarkDto } from 'src/bookmark/dto/editBookmark.dto';
 
 describe('App e2e', () => {
   let app: INestApplication;
@@ -146,12 +148,85 @@ describe('App e2e', () => {
   });
 
   describe('Bookmarks', () => {
-    describe('Create bookmark', () => {});
+    describe('Get bookmarks', () => {
+      it('gets bookmarks', () => {
+        return pactum
+          .spec()
+          .get('/bookmarks')
+          .withHeaders({
+            Authorization: 'Bearer $S{userToken}',
+          })
+          .expectStatus(200)
+          .expectBody([]);
+      });
+    });
 
-    describe('Get bookmark', () => {});
+    describe('Create bookmark', () => {
+      const dto: CreateBookmarkDto = {
+        link: 'randomlink',
+        title: 'TestTitle',
+        description: 'Bla bla',
+      };
+      it('creates a bookmark', () => {
+        return pactum
+          .spec()
+          .post('/bookmarks')
+          .withBody(dto)
+          .withHeaders({
+            Authorization: 'Bearer $S{userToken}',
+          })
+          .expectStatus(201)
+          .expectBodyContains(dto.link)
+          .expectBodyContains(dto.title)
+          .expectBodyContains(dto.description)
+          .stores('bookmarkId', '_id');
+      });
+    });
 
-    describe('Edit bookmark', () => {});
+    describe('Get bookmark by id', () => {
+      it('gets bookmark by id', () => {
+        return pactum
+          .spec()
+          .get('/bookmarks/{id}')
+          .withPathParams('id', '$S{bookmarkId}')
+          .withHeaders({
+            Authorization: 'Bearer $S{userToken}',
+          })
+          .expectStatus(200)
+          .expectBodyContains('$S{bookmarkId}');
+      });
+    });
 
-    describe('Delete bookmark', () => {});
+    describe('Edit bookmark by id', () => {
+      const dto: EditBookmarkDto = {
+        title: 'Edited test title',
+        link: 'Edited test link',
+      };
+      it('Edits bookmars', () => {
+        return pactum
+          .spec()
+          .patch('/bookmarks/{id}')
+          .withPathParams('id', '$S{bookmarkId}')
+          .withHeaders({
+            Authorization: 'Bearer $S{userToken}',
+          })
+          .withBody(dto)
+          .expectBodyContains('$S{bookmarkId}')
+          .expectBodyContains('Edited test title');
+      });
+    });
+
+    describe('Delete bookmark by id', () => {
+      it('should', () => {
+        return pactum
+          .spec()
+          .delete('/bookmarks/{id}')
+          .withPathParams('id', '$S{bookmarkId}')
+          .withHeaders({
+            Authorization: 'Bearer $S{userToken}',
+          })
+          .expectStatus(200);
+      });
+    });
   });
 });
