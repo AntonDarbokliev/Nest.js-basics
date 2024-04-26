@@ -1,12 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Date, now, HydratedDocument } from 'mongoose';
+import { Types, Date, now, HydratedDocument } from 'mongoose';
 
 export type UserDocument = HydratedDocument<Bookmark>;
 
 @Schema()
 export class Bookmark {
-  @Prop({ required: true })
-  id: string;
+  // @Prop({ required: true })
+  // id: string;
 
   @Prop({
     default: now(),
@@ -28,6 +28,12 @@ export class Bookmark {
 
   @Prop({ required: true })
   link: string;
+
+  @Prop({ required: true })
+  userId: string;
+
+  @Prop({ type: Types.ObjectId, ref: 'User' })
+  user: Types.ObjectId;
 }
 
 export const BookmarkSchema = SchemaFactory.createForClass(Bookmark);
